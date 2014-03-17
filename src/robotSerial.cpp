@@ -14,7 +14,7 @@ Note::Note(unsigned char num, unsigned char len){
 
 RobotSerial::RobotSerial(){
     ioSrv = new io_service();
-    serPort = new serial_port(*ioSrv, "/dev/ttyS0");
+    serPort = new serial_port(*ioSrv, "/dev/ttyAMA0");
 
     if(!serPort->is_open()){
         throw runtime_error("Unable to open serial port.");
