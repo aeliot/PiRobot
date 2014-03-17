@@ -37,7 +37,9 @@ void RobotSerial::start(){
 }
 
 void RobotSerial::full(){
-
+    unsigned char msg[1];
+    msg[0] = OPCODE_FULL;
+    write(*serPort, buffer(msg, 1));
 }
 
 void RobotSerial::baud(char bps){
