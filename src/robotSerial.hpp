@@ -71,6 +71,9 @@ using namespace boost::asio;
 #define DRIVE_TURN_RIGHT    0xFFFF
 #define DRIVE_TURN_LEFT     0x0001
 
+#define LED_ADVANCE		0x08
+#define LED_PLAY		0x02
+
 //Scripting events
 #define EVENT_WHEEL_DROP             ((unsigned char)1)
 #define EVENT_WHEEL_DROP_FRONT       ((unsigned char)2)

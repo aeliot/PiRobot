@@ -42,9 +42,9 @@ void RobotSerial::full(){
     write(*serPort, buffer(msg, 1));
 }
 
-void RobotSerial::baud(char bps){
+void RobotSerial::baud(unsigned char bps){
 
-    if(bps > 11 && bps < 0){
+    if(bps > 11){
         throw runtime_error("Invalid baud rate.");
     }
 
@@ -65,7 +65,7 @@ void RobotSerial::safe(){
 //Demos
 void RobotSerial::demo(unsigned char mode){
 
-    if(mode != 255 && mode > 9 && mode < 0){
+    if(mode != 255 && mode > 9){
         throw runtime_error("Invalid demo number.");
     }
 
@@ -154,45 +154,152 @@ void RobotSerial::driveDirect(unsigned char leftH, unsigned char leftL,
 
 void RobotSerial::led(unsigned char ledMask, unsigned char pColor,
                  unsigned char pIntensity){
+    unsigned char msg[4];
+    msg[0] = OPCODE_LEDS;
+    msg[1] = ledMask;
+    msg[2] = pColor;
+    msg[3] = pIntensity;
 
+    write(*serPort, buffer(msg, 4));
 }
 
 void RobotSerial::led(bool advance, bool play, unsigned char pColor,
                  unsigned char pIntensity){
 
+    unsigned char ledMask = 0;
+
+    if (advance){
+        ledMask |= LED_ADVANCE;
+    }
+
+    if (play){
+        ledMask |= LED_PLAY;
+    }
+
+    this->led(ledMask, pColor, pIntensity);
 }
 
 void RobotSerial::digitalOut(unsigned char outBits){
+    unsigned char msg[2];
+    msg[0] = OPCODE_DIGITAL_OUT;
+    msg[1] = outBits;
 
+    write(*serPort, buffer(msg, 2));
 }
 
 void RobotSerial::digitalOut(bool outA, bool outB, bool outC){
+    unsigned char outMask = 0;
 
+    if (outA){
+        outMask |= 1;
+    }
+
+    if (outB){
+        outMask |= 2;
+    }
+
+    if (outC){
+        outMask |= 4;
+    }
+
+    this->digitalOut(outMask);
 }
 
 void RobotSerial::lowSideDrivePWM(unsigned char driveA, unsigned char driveB,
                              unsigned char driveC){
+    unsigned char msg[4];
 
-}
+    if(driveA > 128 || driveB > 128 || driveC > 128){
+        throw runtime_error("Invalid PWM duty cycle. Must be 0-128.");
+    }
 
-void RobotSerial::lowSideDrive(bool driveA, bool driveB, bool driveC){
+    msg[0] = OPCODE_LOW_SIDE_PWM;
+    msg[1] = driveC;
+    msg[2] = driveB;
+    msg[3] = driveA;
 
+    write(*serPort, buffer(msg, 4));
 }
 
 void RobotSerial::lowSideDrive(unsigned char drives){
+    unsigned char msg[2];
 
+    msg[0] = OPCODE_LOW_SIDE;
+    msg[1] = drives;
+
+    write(*serPort, buffer(msg, 2));
+}
+
+void RobotSerial::lowSideDrive(bool driveA, bool driveB, bool driveC){
+    unsigned char driveMask = 0;
+
+    if (driveA){
+        driveMask |= 1;
+    }
+
+    if (driveB){
+        driveMask |= 2;
+    }
+
+    if (driveC){
+        driveMask |= 4;
+    }
+
+    this->lowSideDrive(driveMask);
 }
 
 void RobotSerial::sendIR(unsigned char value){
+    unsigned char msg[2];
 
+    msg[0] = OPCODE_SEND_IR;
+    msg[1] = value;
+
+    write(*serPort, buffer(msg, 2));
 }
 
 void RobotSerial::song(unsigned char id, vector<Note> notes){
 
+    if(id > 15){
+        throw runtime_error("Invalid song number. Must be 0-15.");
+    }
+
+    if(notes.size() > 16 || notes.size() == 0){
+        throw runtime_error("Invalid number of notes. Must be 1-16.")
+    }
+
+    unsigned int length = (notes.size()<<1) + 3;
+
+    unsigned char* msg;
+    msg = malloc(length);
+
+    unsigned int i = 0;
+
+    msg[i++] = OPCODE_SONG;
+    msg[i++] = id;
+    msg[i++] = notes.size();
+
+    for(vector<Note>::iterator it = notes.begin();
+        it != ntoes.end(); it++){
+
+        msg[i++] = it->number;
+        msg[i++] = it->length;
+    }
+
+    write(*serPort, buffer(msg, length));
+    free(msg);
 }
 
 void RobotSerial::playSong(unsigned char id){
+    if(id > 15){
+        throw runtime_error("Invalid song number. Must be 0-15.");
+    }
 
+    unsigned char msg[2];
+
+    msg[0] = OPCODE_SONG_PLAY;
+    msg[1] = id;
+
+    write(*serPort, buffer(msg, 2));
 }
 
 
