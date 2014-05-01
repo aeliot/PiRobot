@@ -10,6 +10,8 @@ using namespace std;
 using namespace boost;
 using namespace boost::asio;
 
+#define DEFAULT_BAUD 57600
+
 //Opcodes
 #define OPCODE_START           ((unsigned char)128)
 #define OPCODE_BAUD            ((unsigned char)129)
@@ -40,6 +42,34 @@ using namespace boost::asio;
 #define OPCODE_WAIT_ANGLE      ((unsigned char)157)
 #define OPCODE_WAIT_EVENT      ((unsigned char)158)
 
+#define BAUD_300        (char)0
+#define BAUD_600        (char)1
+#define BAUD_1200       (char)2
+#define BAUD_2400       (char)3
+#define BAUD_4800       (char)4
+#define BAUD_9600       (char)5
+#define BAUD_14400      (char)6
+#define BAUD_19200      (char)7
+#define BAUD_28800      (char)8
+#define BAUD_38400      (char)9
+#define BAUD_57600      (char)10
+#define BAUD_115200     (char)11
+
+#define DEMO_ABORT          (char)255
+#define DEMO_COVER          (char)0
+#define DEMO_COVER_DOCK     (char)1
+#define DEMO_SPOT_COVER     (char)2
+#define DEMO_MOUSE          (char)3
+#define DEMO_FIGURE_EIGHT   (char)4
+#define DEMO_WIMP           (char)5
+#define DEMO_HOME           (char)6
+#define DEMO_TAG            (char)7
+#define DEMO_PACHELBEL      (char)8
+#define DEMO_BANJO          (char)9
+
+#define DRIVE_STRAIGHT      0x8000
+#define DRIVE_TURN_RIGHT    0xFFFF
+#define DRIVE_TURN_LEFT     0x0001
 
 //Scripting events
 #define EVENT_WHEEL_DROP             ((unsigned char)1)
