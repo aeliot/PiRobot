@@ -9,10 +9,14 @@ using namespace std;
 using namespace boost;
 using namespace boost::asio;
 
-Note::Note(unsigned char num, unsigned char len){
+Note::Note(unsigned char num, unsigned char len)
+{
+
 }
 
-RobotSerial::RobotSerial(string serialPath){
+
+RobotSerial::RobotSerial(string serialPath)
+{
     ioSrv = new io_service();
     serPort = new serial_port(*ioSrv, serialPath);
 
@@ -24,26 +28,33 @@ RobotSerial::RobotSerial(string serialPath){
     serPort->set_option(baud_opt);
 }
 
-RobotSerial::~RobotSerial(){
+
+RobotSerial::~RobotSerial()
+{
     delete serPort;
     delete ioSrv;
 }
 
+
 //System Controls
-void RobotSerial::start(){
+void RobotSerial::start()
+{
     unsigned char msg[1];
     msg[0] = OPCODE_START;
     write(*serPort, buffer(msg, 1));
 }
 
-void RobotSerial::full(){
+
+void RobotSerial::full()
+{
     unsigned char msg[1];
     msg[0] = OPCODE_FULL;
     write(*serPort, buffer(msg, 1));
 }
 
-void RobotSerial::baud(unsigned char bps){
 
+void RobotSerial::baud(unsigned char bps)
+{
     if(bps > 11){
         throw runtime_error("Invalid baud rate.");
     }
@@ -55,7 +66,9 @@ void RobotSerial::baud(unsigned char bps){
     write(*serPort, buffer(msg, 2));
 }
 
-void RobotSerial::safe(){
+
+void RobotSerial::safe()
+{
     unsigned char msg[1];
     msg[0] = OPCODE_SAFE;
     write(*serPort, buffer(msg, 1));
@@ -63,8 +76,8 @@ void RobotSerial::safe(){
 
 
 //Demos
-void RobotSerial::demo(unsigned char mode){
-
+void RobotSerial::demo(unsigned char mode)
+{
     if(mode != 255 && mode > 9){
         throw runtime_error("Invalid demo number.");
     }
@@ -75,19 +88,24 @@ void RobotSerial::demo(unsigned char mode){
     write(*serPort, buffer(msg, 2));
 }
 
-void RobotSerial::cover(){
+
+void RobotSerial::cover()
+{
     unsigned char msg[1];
     msg[0] = OPCODE_COVER;
     write(*serPort, buffer(msg, 1));
 }
 
-void RobotSerial::coverDock(){
+
+void RobotSerial::coverDock()
+{
     unsigned char msg[1];
     msg[0] = OPCODE_COVER_DOCK;
     write(*serPort, buffer(msg, 1));
 }
 
-void RobotSerial::spot(){
+void RobotSerial::spot()
+{
     unsigned char msg[1];
     msg[0] = OPCODE_SPOT;
     write(*serPort, buffer(msg, 1));
@@ -264,13 +282,13 @@ void RobotSerial::song(unsigned char id, vector<Note> notes){
     }
 
     if(notes.size() > 16 || notes.size() == 0){
-        throw runtime_error("Invalid number of notes. Must be 1-16.")
+        throw runtime_error("Invalid number of notes. Must be 1-16.");
     }
 
     unsigned int length = (notes.size()<<1) + 3;
 
     unsigned char* msg;
-    msg = malloc(length);
+    msg = (unsigned char*)malloc(length);
 
     unsigned int i = 0;
 
@@ -279,7 +297,7 @@ void RobotSerial::song(unsigned char id, vector<Note> notes){
     msg[i++] = notes.size();
 
     for(vector<Note>::iterator it = notes.begin();
-        it != ntoes.end(); it++){
+        it != notes.end(); it++){
 
         msg[i++] = it->number;
         msg[i++] = it->length;

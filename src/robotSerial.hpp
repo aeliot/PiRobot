@@ -135,20 +135,26 @@ using namespace boost::asio;
 #define SENSOR_ID_REQUESTED_VELOCITY_LEFT  ((unsigned char)42)
 
 
-class Note {
+class Note 
+{
+public:
 	Note(unsigned char num, unsigned char len);
 	unsigned char number;
 	unsigned char length;
 };
 
-class RobotSerial {
+
+class RobotSerial 
+{
 public:
 	RobotSerial();
+	RobotSerial(string serialPath);
     ~RobotSerial();
+
 	//System Controls
 	void start();
 	void full();
-	void baud(char bps);
+	void baud(unsigned char bps);
 	void safe();
 
 	//Demos
@@ -191,7 +197,6 @@ public:
 	void waitAngle(int ang);
 	void waitAngle(unsigned char angH, unsigned char angL);
 	void waitEvent(unsigned char event);
-
 
 private:
 	io_service* ioSrv;
